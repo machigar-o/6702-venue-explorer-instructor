@@ -12,4 +12,5 @@ interface VenueItem {
   
 interface VenueJson {
     all_venues: VenueItem[]
-  }
+}
+
