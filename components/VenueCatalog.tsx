@@ -4,9 +4,11 @@ import { Avatar, Card, Text } from 'react-native-paper';
 import { Button, View, useWindowDimensions } from 'react-native';
 import venueStyles from './VenueStyles';
 import { FlatList } from 'react-native';
+import { useAppContext } from '@/app/(nav)/_layout';
 
 export default function VenueCatalog() 
 {
+    const {selectedVenue, setSelectedVenue} = useAppContext()
     const [venueData, setVenueData] = useState<VenueItem[]>([]);
     
     const {height, width} = useWindowDimensions();
@@ -20,7 +22,7 @@ export default function VenueCatalog()
 
     const fetchVenues = async () => {
         try {
-          const response = await fetch("https://6711-34-23-16-184.ngrok-free.app/get_venues", {
+          const response = await fetch("https://15dd-34-74-50-22.ngrok-free.app/get_venues", {
             method: 'GET',
             headers: {
               'ngrok-skip-browser-warning': 'true',
@@ -52,7 +54,8 @@ export default function VenueCatalog()
           </Card.Content>
           <Card.Cover source={{ uri: `data:image/jpeg;base64,${item.picture}` }} />
           <Card.Actions>
-          <Button title="Book this Venue" color="#9b59b6"/>
+          <Button title="Book this Venue" color="#9b59b6" 
+          onPress={()=>{setSelectedVenue(item._id)}}/>
           </Card.Actions>
         </Card>  
     )

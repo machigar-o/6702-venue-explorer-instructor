@@ -8,19 +8,33 @@ import TabBarBackground from '@/components/ui/TabBarBackground';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import {Drawer} from "expo-router/drawer"
+import { createContext, useContext, useState } from 'react';
+
+const AppContext = createContext<{selectedVenue:string, setSelectedVenue:Function}|null>(null)
+export function useAppContext() {
+  const context = useContext(AppContext);
+  if (!context) {
+    throw new Error('useAppContext must be used inside AppContext.Provider');
+  }
+  return context;
+}
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
+  const [selectedVenue, setSelectedVenue] = useState('')
 
   if (Platform.OS === 'web') 
     return (
+            <AppContext.Provider value={{selectedVenue, setSelectedVenue}}>
             <Drawer>
                 <Drawer.Screen name="index" options={{ title: "Home" }} />
                 <Drawer.Screen name="explore" options={{ title: "Explore" }} />
             </Drawer>
+            </AppContext.Provider>
         )
   else 
     return (
+    <AppContext.Provider value={{selectedVenue, setSelectedVenue}}>
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
@@ -50,5 +64,6 @@ export default function TabLayout() {
         }}
       />
     </Tabs>
+    </AppContext.Provider>
   );
 }
