@@ -1,3 +1,9 @@
+interface bookingItem {
+  booking_date: string,
+  email: string,
+  name_lastname: string
+}
+
 interface VenueItem {
     _id: string,
     name: string,
@@ -7,7 +13,8 @@ interface VenueItem {
     postalcode: string,
     tel: string,
     picture: string,
-    dailyrate: number
+    dailyrate: number,
+    bookings: bookingItem[]
   }
   
 interface VenueJson {

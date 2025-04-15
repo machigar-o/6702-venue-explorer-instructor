@@ -5,6 +5,8 @@ import { Button, View, useWindowDimensions } from 'react-native';
 import venueStyles from './VenueStyles';
 import { FlatList } from 'react-native';
 import { useAppContext } from '@/app/(nav)/_layout';
+import getVenues from '@/lib/getVenues';
+import { router } from 'expo-router';
 
 export default function VenueCatalog() 
 {
@@ -17,27 +19,8 @@ export default function VenueCatalog()
     const numColumns = width < SM_SCREEN ? 1 : width < MD_SCREEN ? 2 : 3
     
     useEffect(() => {
-          fetchVenues();
-    }, []);
-
-    const fetchVenues = async () => {
-        try {
-          const response = await fetch("https://15dd-34-74-50-22.ngrok-free.app/get_venues", {
-            method: 'GET',
-            headers: {
-              'ngrok-skip-browser-warning': 'true',
-              'Content-Type': 'application/json',
-            }
-          })
-          if(response.ok) {
-            const json:VenueJson = await response.json();
-            setVenueData(json.all_venues);
-          }
-        } 
-        catch (error) {
-          console.error('Error fetching data:', error);
-        }
-    };
+          getVenues({setVenueData: setVenueData});
+    }, []);    
 
     const renderCardData = ({item}:{item: VenueItem})=>(
           <Card style={venueStyles.cardItem}>
@@ -55,7 +38,10 @@ export default function VenueCatalog()
           <Card.Cover source={{ uri: `data:image/jpeg;base64,${item.picture}` }} />
           <Card.Actions>
           <Button title="Book this Venue" color="#9b59b6" 
-          onPress={()=>{setSelectedVenue(item._id)}}/>
+          onPress={()=>{
+            setSelectedVenue(item._id)
+            router.replace('/explore')
+          }}/>
           </Card.Actions>
         </Card>  
     )
