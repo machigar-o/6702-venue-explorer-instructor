@@ -1,7 +1,7 @@
 export default function getVenues({setVenueData}:{setVenueData:Function}) {
     const fetchVenues = async () => {
         try {
-          const response = await fetch("https://a4f9-34-16-200-101.ngrok-free.app/get_venues", {
+          const response = await fetch("https://7bb6-35-230-176-130.ngrok-free.app/get_venues", {
             method: 'GET',
             headers: {
               'ngrok-skip-browser-warning': 'true',

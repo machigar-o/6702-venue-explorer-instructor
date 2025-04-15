@@ -5,7 +5,9 @@ import { Picker } from "@react-native-picker/picker";
 import venueBookStyles from "./VenueBookStyles";
 import { useWindowDimensions, TextInput, Button, Platform } from 'react-native';
 import { ThemedText } from "./ThemedText"; 
-import { DatePickerModal } from "react-native-paper-dates"; 
+import { DatePickerModal } from "react-native-paper-dates";
+import addBooking from "@/lib/addBooking"; 
+import { format } from "date-fns";
 
 export default function VenueBookForm({preSelectedVenueId} : {preSelectedVenueId:string}) 
 {
@@ -19,6 +21,7 @@ export default function VenueBookForm({preSelectedVenueId} : {preSelectedVenueId
     const [bookingDate, setBookingDate] = useState<Date | undefined>(undefined);
     const [isValidEmail, setIsValidEmail] = useState(false)
     const [invalidMsg, setInvalidMsg] = useState('')
+    const [bookResponse, setBookResponse] = useState<BookResponseJson|undefined>(undefined)
     
     useEffect(()=>{
         setVenueId(preSelectedVenueId)
@@ -54,7 +57,24 @@ export default function VenueBookForm({preSelectedVenueId} : {preSelectedVenueId
         else {
             setInvalidMsg("")
         }
-    }
+
+        if (invalidMsg==='') {
+            const booking:bookingItem = {
+                email: email,
+                name_lastname: nameLastname,
+                booking_date: (bookingDate!=undefined)? format(bookingDate, 'dd-MM-yyyy'):''
+            }
+            addBooking({
+                venueId: venueId,
+                bookItem:booking,
+                setResponse:setBookResponse
+            })
+            //Reset booking form
+            setEmail('')
+            setNameLastname('')
+            setBookingDate(undefined)
+        }
+    } //end handleBookingSubmit
     
     const onDatePickerConfirm = (params: {date:Date|undefined}) => {
         setShowDatePicker(false);
@@ -116,6 +136,9 @@ export default function VenueBookForm({preSelectedVenueId} : {preSelectedVenueId
                 <Button title="Book this Venue" color="#4654eb" onPress={handleBookingSubmit}/>
             </ThemedView>
             <ThemedText style={venueBookStyles.invalidWarn}>{invalidMsg}</ThemedText>
+            <ThemedText type="subtitle">
+                {(bookResponse!=undefined)? bookResponse.message:''}
+            </ThemedText>
         </ThemedView>
     )
 }

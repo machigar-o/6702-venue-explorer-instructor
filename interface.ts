@@ -21,3 +21,7 @@ interface VenueJson {
     all_venues: VenueItem[]
 }
 
+interface BookResponseJson {
+    message: string
+}
+
